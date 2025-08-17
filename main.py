@@ -1,3 +1,4 @@
+import datetime
 from dotenv import load_dotenv
 
 from livekit import agents
@@ -8,7 +9,7 @@ from livekit.plugins import (
 from livekit.plugins import google
 
 from prompts import BASE_INSTRUCTION, GREET_INSTRUCTION
-from tools import search_web, check_incoming_schedule
+from tools import search_web, check_incoming_schedule, create_event_on_calendar
 
 load_dotenv()
 
@@ -24,6 +25,7 @@ class Assistant(Agent):
             tools=[
                 search_web,
                 check_incoming_schedule,
+                create_event_on_calendar,
             ]
         )
 
@@ -47,9 +49,12 @@ async def entrypoint(ctx: agents.JobContext):
 
     await ctx.connect()
 
+    today = datetime.date.today().isoformat()
+
     await session.generate_reply(
-        instructions=GREET_INSTRUCTION,
+        instructions=f"Today is {today}" + GREET_INSTRUCTION,
     )
+
 
 
 if __name__ == "__main__":

@@ -9,12 +9,13 @@ from googleapiclient.errors import HttpError
 
 # If modifying these scopes, delete the file token.json.
 SCOPES = ["https://www.googleapis.com/auth/calendar"]
-creds = None
+
 
 def get_credentials():
     """
     Get the credentials for Google Calendar API.
     """
+    creds = None
     # The file token.json stores the user's access and refresh tokens, and is
     # created automatically when the athorization flow completes for the first
     # time.u
@@ -32,12 +33,13 @@ def get_credentials():
       # Save the credentials for the next run
       with open("token.json", "w") as token:
         token.write(creds.to_json())
+    return creds
 
 def get_incoming_events():
   """
   Get the next 10 events on google calendar.
   """
-  get_credentials()
+  creds = get_credentials()
 
   try:
     service = build("calendar", "v3", credentials=creds)
@@ -75,3 +77,23 @@ def get_incoming_events():
   except HttpError as error:
     print(f"An error occurred: {error}")
     return f"An error occurred, unable to make request: {error}"
+  
+
+def create_event(event):
+    """
+    Create an event on google calendar.
+    """
+    creds = get_credentials()
+
+    try:
+      service = build("calendar", "v3", credentials=creds)
+      add_event = service.events().insert(calendarId="primary", body=event).execute()
+      link = add_event.get('htmlLink')
+
+      print(f"Event successfully created: {link}")
+      return f"Event successfully created: {link}"
+
+    except HttpError as error:
+      print(f"An error occurred: {error}")
+      return f"An error occurred, unable to make request: {error}"
+
