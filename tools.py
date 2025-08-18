@@ -78,13 +78,12 @@ async def check_tasks():
     Check tasks from Notion.
     """
     try:
-        pages = get_pages()
-        tasks = []
-        for page in pages:
-            task = page["properties"]["Task"]["title"][0]["text"]["content"]
-            deadline = page["properties"]["Deadline"]["date"]["start"]
-            status = page["properties"]["Status"]["status"]["name"]
-            tasks.append(f"Task: {task}, Deadline: {deadline}, Status: {status}")
+        tasks = get_pages()
+        
+        if isinstance(tasks, str):
+            logging.info(f"No tasks found: {tasks}")
+            return tasks
+        
         logging.info(f"Tasks retrieved")
         logging.info("\n".join(tasks))
         return "\n".join(tasks)

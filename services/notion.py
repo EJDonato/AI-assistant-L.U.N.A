@@ -25,13 +25,14 @@ def get_pages():
         json.dump(data, f, indent=4, ensure_ascii=False)
 
     results = data["results"]
-    return results
-
-pages = get_pages()
-for page in pages:
-    task = page["properties"]["Task"]["title"][0]["text"]["content"]
-    deadline = page["properties"]["Deadline"]["date"]["start"]
-    status = page["properties"]["Status"]["status"]["name"]
-
-    print(f"Task: {task}, Deadline: {deadline}, Status: {status}")
+    if not results:
+        return "No tasks found."
+    
+    tasks = []
+    for page in results:
+        task = page["properties"]["Task"]["title"][0]["text"]["content"]
+        deadline = page["properties"]["Deadline"]["date"]["start"]
+        status = page["properties"]["Status"]["status"]["name"]
+        tasks.append(f"Task: {task}, Deadline: {deadline}, Status: {status}")
+    return tasks
 
