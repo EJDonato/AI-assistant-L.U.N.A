@@ -51,10 +51,8 @@ async def entrypoint(ctx: agents.JobContext):
 
     await ctx.connect()
 
-    today = datetime.date.today().isoformat()
-
     await session.generate_reply(
-        instructions=f"Today is {today}" + GREET_INSTRUCTION,
+        instructions=GREET_INSTRUCTION,
     )
 
 
