@@ -4,6 +4,7 @@ from langchain_community.tools import DuckDuckGoSearchRun
 from typing import Optional
 
 from services.google_calendar import get_incoming_events, create_event
+from services.notion import get_pages
 
 @function_tool()
 async def search_web(
@@ -71,3 +72,22 @@ async def create_event_on_calendar(
         logging.error(f"Error creating event: {e}")
         return f"An error occurred while creating the event. Due to {e}."
 
+@function_tool()
+async def check_tasks():
+    """
+    Check tasks from Notion.
+    """
+    try:
+        pages = get_pages()
+        tasks = []
+        for page in pages:
+            task = page["properties"]["Task"]["title"][0]["text"]["content"]
+            deadline = page["properties"]["Deadline"]["date"]["start"]
+            status = page["properties"]["Status"]["status"]["name"]
+            tasks.append(f"Task: {task}, Deadline: {deadline}, Status: {status}")
+        logging.info(f"Tasks retrieved")
+        logging.info("\n".join(tasks))
+        return "\n".join(tasks)
+    except Exception as e:
+        logging.error(f"Error checking tasks: {e}")
+        return f"An error occurred while checking tasks. Due to {e}."
