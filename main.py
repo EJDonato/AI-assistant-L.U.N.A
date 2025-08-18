@@ -9,7 +9,7 @@ from livekit.plugins import (
 from livekit.plugins import google
 
 from prompts import BASE_INSTRUCTION, GREET_INSTRUCTION
-from tools import search_web, check_incoming_schedule, create_event_on_calendar
+from tools import search_web, check_incoming_schedule, create_event_on_calendar, check_tasks, create_task
 
 load_dotenv()
 
@@ -26,6 +26,8 @@ class Assistant(Agent):
                 search_web,
                 check_incoming_schedule,
                 create_event_on_calendar,
+                check_tasks,
+                create_task,
             ]
         )
 

@@ -72,6 +72,8 @@ async def create_event_on_calendar(
         logging.error(f"Error creating event: {e}")
         return f"An error occurred while creating the event. Due to {e}."
 
+
+# Notion Tools
 @function_tool()
 async def check_tasks():
     """
