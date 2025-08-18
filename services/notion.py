@@ -36,3 +36,35 @@ def get_pages():
         tasks.append(f"Task: {task}, Deadline: {deadline}, Status: {status}")
     return tasks
 
+
+def create_task(task, deadline):
+    url = f"https://api.notion.com/v1/pages"
+    payload = {
+        "parent": {"database_id": TASK_DB_ID},
+        "properties": {
+            "Task": {
+                "title": [
+                    {
+                        "text": {
+                            "content": task
+                        }
+                    }
+                ]
+            },
+            "Deadline": {
+                "date": {
+                    "start": deadline
+                }
+            },
+            "Status": {
+                "status": {
+                    "name": "Not Started"
+                }
+            }
+        }
+    }
+
+    res = requests.post(url, headers=headers, json=payload)
+    return res
+
+

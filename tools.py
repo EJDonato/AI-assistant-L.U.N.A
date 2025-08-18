@@ -79,7 +79,7 @@ async def check_tasks():
     """
     try:
         tasks = get_pages()
-        
+
         if isinstance(tasks, str):
             logging.info(f"No tasks found: {tasks}")
             return tasks
@@ -90,3 +90,27 @@ async def check_tasks():
     except Exception as e:
         logging.error(f"Error checking tasks: {e}")
         return f"An error occurred while checking tasks. Due to {e}."
+    
+@function_tool()
+async def create_task(
+    context: RunContext, 
+    task: str, 
+    deadline: str
+    ) -> str:
+    """
+    Create a task in Notion.
+
+    Args:
+        task (str): The task short title.
+        deadline (str): The deadline for the task in this format: "2025-12-30"
+    """
+    try:
+        result = create_task(task, deadline)
+        if result.status_code != 200:
+            logging.error(f"Failed to create task: {result.text}")
+            return f"Failed to create task: {result.text}"
+        logging.info(f"Task created: {result.json()}")
+        return f"Task '{task}' created successfully with deadline {deadline}."
+    except Exception as e:
+        logging.error(f"Error creating task: {e}")
+        return f"An error occurred while creating the task. Due to {e}."
